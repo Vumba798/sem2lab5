@@ -29,5 +29,7 @@ public:
 	void resize(const size_t &count);
 	void print() const;
 	void swap(Vector<T> &oth);
+
+	T* data();
 };
 

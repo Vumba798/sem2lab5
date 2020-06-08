@@ -12,22 +12,24 @@ using std::cerr;
 
 
 int main() {
+
 	
 	Vector<int> vec2;
+	cout << "vec2 is empty? " << (vec2.data() == nullptr) << endl;
+	vec2.push_back(0);
 	vec2.push_back(1);
 	vec2.push_back(2);
-	vec2.push_back(3);
 	cout << vec2[1] << endl;
 	cout << vec2.at(1) << endl;
 	Vector<int> vec(vec2);
 	cout << "vec empt" << vec.empty() << endl << endl;
 	vec.push_back(3);
 	cout << "vec.capacity = " << vec.capacity() << "\t vec.size = " << vec.size() << endl;
+	vec.push_back(4);
+	cout << "vec.capacity = " << vec.capacity() << "\t vec.size = " << vec.size() << endl;
 	vec.push_back(5);
 	cout << "vec.capacity = " << vec.capacity() << "\t vec.size = " << vec.size() << endl;
 	vec.push_back(6);
-	cout << "vec.capacity = " << vec.capacity() << "\t vec.size = " << vec.size() << endl;
-	vec.push_back(7);
 	cout << "vec.capacity = " << vec.capacity() << "\t vec.size = " << vec.size() << endl;
 	vec.insert(3, 500);
 	vec.print();

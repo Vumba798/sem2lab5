@@ -105,70 +105,70 @@ void Vector<T>::clear() {
 	_data = nullptr;
 }
 
-
-
-template <class T>
-void Vector<T>::insert(const size_t &pos, T val) {
+template<class T>
+void Vector<T>::insert(const size_t& pos, T val) {
 	if (pos >= _size) {
 		throw std::out_of_range("wrong index");
 	}
 	size_t newSize;
-	if (_size <= 1 || _capacity > _size) {
-		newSize = _size + 1;
+	if (_capacity > _size) {
+		++_size;
+		T tmp2;
+		T tmp1 = val;
+
+		for (size_t i = pos; i < _size;++i) {
+			tmp2 = _data[i];
+			_data[i] = tmp1;
+			tmp1 = tmp2;
+			
+		}
+		
 	}
-	else if(_capacity == _size) {
-		newSize = static_cast<size_t>(_capacity * 1.5);
+	else {
+		size_t newCapacity;
+		switch (_capacity){
+			case 0: newCapacity = 1; break;
+			case 1: newCapacity = 2; break;
+			default: newCapacity = _capacity * 1.5;
+		}
+		T* newData = new T[newCapacity];
+		for (size_t i = 0; i < pos; ++i) {
+			newData[i] = _data[i];
+		}
+		newData[pos] = val;
+		for (size_t i = pos; i < _size;++i) {
+			newData[i + 1] = _data[i];
+		}
+		_capacity = newCapacity;
+		++_size;
+		delete[] _data;
+		_data = newData;
 	}
-	T* newData = new T[newSize];
-	for (size_t i = 0; i < pos; ++i) {
-		newData[i] = _data[i];
-	}
-	newData[pos] = val;
-	for (size_t i = pos + 1; i < _size + 1; ++i) {
-		newData[i] = _data[i - 1];
-	}
-	delete[] _data;
-	_data = newData;
-	_size += 1;
-	_capacity = newSize;
 }
 
 template<class T>
-void Vector<T>::erase(const size_t &pos) {
+void Vector<T>::erase(const size_t& pos) {
 	if (pos >= _size) {
 		throw std::out_of_range("wrong index");
 	}
-	T* newData = new T[_size - 1];
-	for (size_t i = 0; i < pos; ++i) {
-		newData[i] = _data[i];
+	--_size;
+	for (size_t i = pos; i < _size; ++i) {
+		_data[i] = _data[i + 1];
 	}
-	for (size_t i = pos + 1; i < _size; ++i) {
-		newData[i - 1] = _data[i];
-	}
-	_size -= 1;
-	_capacity = _size;
-	delete[] _data;
-	_data = newData;
 }
 
+
 template<class T>
-void Vector<T>::erase(const size_t &r1, const size_t &r2) {
+void Vector<T>::erase(const size_t& r1, const size_t& r2) {
 	if (r1 > r2 || r2 >= _size) {
 		throw std::out_of_range("wrong index");
 	}
-	size_t newSize = _size - (r2 - r1);
-	T* newData = new T[newSize];
-	for (size_t i = 0; i < r1; ++i) {
-		newData[i] = _data[i];
+	for (size_t i = 0; i < _size - r2; ++i) {
+		_data[i + r1] = _data[i + r2];
 	}
-	for (size_t i = r2; i < _size; ++i) {
-		newData[i - r2 + r1] = _data[i];
-	}
-	delete[] _data;
-	_data = newData;
-	_size = newSize;
-	_capacity = newSize;
+	_size -= r2 - r1;
 }
+
 
 template<class T>
 void Vector<T>::push_back(T val) {
@@ -199,18 +199,11 @@ void Vector<T>::push_back(T val) {
 
 template<class T>
 T Vector<T>::pop_back() {
-	T val = _data[_size - 1];
-	size_t newSize = _size - 1;
-	T* newData = new T[newSize];
-	for (size_t i = 0; i < newSize; ++i) {
-		newData[i] = _data[i];
-	}
-	_size = newSize;
-	_capacity = newSize;
-	delete[] _data;
-	_data = newData;
-	return val;
+	--_size;
+	return _data[_size];
 }
+
+
 
 template<class T>
 void Vector<T>::resize(const size_t &count) {
@@ -244,4 +237,9 @@ void Vector<T>::swap(Vector<T> &oth) {
 	tmpVec = oth;
 	oth = *this;
 	*this = tmpVec;
+}
+
+template <class T>
+T* Vector<T>::data() {
+	return _size == 0 ? nullptr : _data;
 }
